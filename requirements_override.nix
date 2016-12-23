@@ -15,7 +15,15 @@ self: super: {
   });
 
   "PyYAML" = python.overrideDerivation super."PyYAML" (old: {
-    propagatedBuildInputs = old.propagatedBuildInputs ++ [ pkgs.libyaml ];
+    propagatedNativeBuildInputs = old.propagatedBuildInputs ++ [ pkgs.libyaml ];
+  });
+
+  "BTrees" = python.overrideDerivation super."BTrees" (old: {
+    propagatedNativeBuildInputs =
+      builtins.filter
+        (x: (builtins.parseDrvName x.name).name != "${python.__old.python.libPrefix}-ZODB")
+        old.propagatedNativeBuildInputs;
+    #
   });
 
 }
